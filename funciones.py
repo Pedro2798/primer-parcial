@@ -251,12 +251,14 @@ def mostrar_participantes_ordenados(nombres, puntajes_j1, puntajes_j2, puntajes_
     """
     Muestra los participantes ordenados alfabéticamente (A-Z) con sus datos.
     """
-    # Crear array de datos
-    datos = []
+    # Crear array de datos con tamaño fijo
+    datos = [("", 0, 0, 0)] * len(nombres)  # Array de tuplas con valores por defecto
     cant_datos = 0
+    
+    # Llenar el array con los datos válidos
     for i in range(len(nombres)):
         if nombres[i] != "":
-            datos.append((nombres[i], puntajes_j1[i], puntajes_j2[i], puntajes_j3[i]))
+            datos[cant_datos] = (nombres[i], puntajes_j1[i], puntajes_j2[i], puntajes_j3[i])
             cant_datos += 1
     
     # Ordenar datos manualmente (bubble sort)
