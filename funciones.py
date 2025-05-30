@@ -106,20 +106,33 @@ def mostrar_jurado_estricto(puntajes_j1, puntajes_j2, puntajes_j3):
     Muestra todos los jurados con el promedio más bajo.
     """
     p1, p2, p3 = promedios_jurados(puntajes_j1, puntajes_j2, puntajes_j3)
-    min_prom = min(p1, p2, p3)
-    jurados = []
+    # Encontrar el mínimo manualmente
+    min_prom = p1
+    if p2 < min_prom:
+        min_prom = p2
+    if p3 < min_prom:
+        min_prom = p3
+    
+    # Crear array de tamaño fijo para jurados
+    jurados = [0] * 3
+    cant_jurados = 0
+    
     if p1 == min_prom:
-        jurados.append(1)
+        jurados[cant_jurados] = 1
+        cant_jurados += 1
     if p2 == min_prom:
-        jurados.append(2)
+        jurados[cant_jurados] = 2
+        cant_jurados += 1
     if p3 == min_prom:
-        jurados.append(3)
+        jurados[cant_jurados] = 3
+        cant_jurados += 1
+    
     # Concatenar jurados manualmente
     jurados_str = ""
     i = 0
-    while i < len(jurados):
+    while i < cant_jurados:
         jurados_str = jurados_str + str(jurados[i])
-        if i < len(jurados) - 1:
+        if i < cant_jurados - 1:
             jurados_str = jurados_str + ", "
         i = i + 1
     print("Jurado(s) mas estricto(s): " + jurados_str + f" con promedio {min_prom:.2f}/10")
@@ -129,20 +142,33 @@ def mostrar_jurado_generoso(puntajes_j1, puntajes_j2, puntajes_j3):
     Muestra todos los jurados con el promedio más alto.
     """
     p1, p2, p3 = promedios_jurados(puntajes_j1, puntajes_j2, puntajes_j3)
-    max_prom = max(p1, p2, p3)
-    jurados = []
+    # Encontrar el máximo manualmente
+    max_prom = p1
+    if p2 > max_prom:
+        max_prom = p2
+    if p3 > max_prom:
+        max_prom = p3
+    
+    # Crear array de tamaño fijo para jurados
+    jurados = [0] * 3
+    cant_jurados = 0
+    
     if p1 == max_prom:
-        jurados.append(1)
+        jurados[cant_jurados] = 1
+        cant_jurados += 1
     if p2 == max_prom:
-        jurados.append(2)
+        jurados[cant_jurados] = 2
+        cant_jurados += 1
     if p3 == max_prom:
-        jurados.append(3)
+        jurados[cant_jurados] = 3
+        cant_jurados += 1
+    
     # Concatenar jurados manualmente
     jurados_str = ""
     i = 0
-    while i < len(jurados):
+    while i < cant_jurados:
         jurados_str = jurados_str + str(jurados[i])
-        if i < len(jurados) - 1:
+        if i < cant_jurados - 1:
             jurados_str = jurados_str + ", "
         i = i + 1
     print("Jurado(s) mas generoso(s): " + jurados_str + f" con promedio {max_prom:.2f}/10")
@@ -190,8 +216,24 @@ def mostrar_top3_promedio(nombres, puntajes_j1, puntajes_j2, puntajes_j3):
     """
     Muestra los tres participantes con mayor puntaje promedio.
     """
-    promedios = [calcular_promedio(puntajes_j1[i], puntajes_j2[i], puntajes_j3[i]) if nombres[i] != "" else -1 for i in range(len(nombres))]
-    indices = sorted(range(len(promedios)), key=lambda i: promedios[i], reverse=True)
+    # Crear array de promedios
+    promedios = [0] * len(nombres)
+    for i in range(len(nombres)):
+        if nombres[i] != "":
+            promedios[i] = calcular_promedio(puntajes_j1[i], puntajes_j2[i], puntajes_j3[i])
+        else:
+            promedios[i] = -1
+    
+    # Ordenar índices manualmente (bubble sort)
+    indices = list(range(len(promedios)))
+    for i in range(len(indices)):
+        for j in range(0, len(indices)-i-1):
+            if promedios[indices[j]] < promedios[indices[j+1]]:
+                # Intercambiar índices
+                temp = indices[j]
+                indices[j] = indices[j+1]
+                indices[j+1] = temp
+    
     count = 0
     for idx in indices:
         if nombres[idx] != "" and count < 3:
@@ -209,12 +251,29 @@ def mostrar_participantes_ordenados(nombres, puntajes_j1, puntajes_j2, puntajes_
     """
     Muestra los participantes ordenados alfabéticamente (A-Z) con sus datos.
     """
-    datos = [(nombres[i], puntajes_j1[i], puntajes_j2[i], puntajes_j3[i]) for i in range(len(nombres)) if nombres[i] != ""]
-    datos.sort(key=lambda x: x[0])
-    if not datos:
+    # Crear array de datos
+    datos = []
+    cant_datos = 0
+    for i in range(len(nombres)):
+        if nombres[i] != "":
+            datos.append((nombres[i], puntajes_j1[i], puntajes_j2[i], puntajes_j3[i]))
+            cant_datos += 1
+    
+    # Ordenar datos manualmente (bubble sort)
+    for i in range(cant_datos):
+        for j in range(0, cant_datos-i-1):
+            if datos[j][0] > datos[j+1][0]:
+                # Intercambiar datos
+                temp = datos[j]
+                datos[j] = datos[j+1]
+                datos[j+1] = temp
+    
+    if cant_datos == 0:
         print("No hay participantes cargados.")
         return
-    for nombre, p1, p2, p3 in datos:
+        
+    for i in range(cant_datos):
+        nombre, p1, p2, p3 = datos[i]
         print("| NOMBRE PARTICIPANTE: ", nombre)
         print("| PUNTAJE JURADO 1: ", p1)
         print("| PUNTAJE JURADO 2: ", p2)
